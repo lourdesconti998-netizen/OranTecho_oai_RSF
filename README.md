@@ -233,3 +233,4 @@ Next_Generation_Node_B/
 User_Equipment/
 RAN_Intelligent_Controllers/Flexible-RIC/
 ```
+Nota: Se utilizaron herramientas de inteligencia artificial como apoyo en procesos puntuales de instalación y depuración.
