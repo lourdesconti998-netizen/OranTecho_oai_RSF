@@ -158,25 +158,25 @@ Una vez ejecutada la xApp modificada, la consola muestra las métricas KPM recib
 
 En este caso, las métricas evaluadas se encuentran dentro de valores favorables.
 
-![Salida en consola para enlace MUY BUENO](images/salida_muy_bueno.png)
+![Salida en consola para enlace MUY BUENO](muy_bueno.jpg)
 
 ### Enlace clasificado como BUENO
 
 En este caso, el enlace no presenta una degradación clara, pero tampoco cumple todas las condiciones necesarias para ser clasificado como `MUY BUENO`.
 
-![Salida en consola para enlace BUENO](images/salida_bueno.png)
+![Salida en consola para enlace BUENO](bueno.jpg)
 
 ### Enlace clasificado como MALO
 
 En este caso, al menos una de las métricas evaluadas presenta un valor degradado. La xApp muestra la clasificación del enlace y una sugerencia de diagnóstico asociada.
 
-![Salida en consola para enlace MALO](images/salida_malo.png)
+![Salida en consola para enlace MALO](malo.jpg)
 
 ### Caso sin tráfico uplink
 
 Cuando no hay tráfico uplink activo, la xApp puede clasificar el enlace como `MALO` debido al bajo throughput. Este caso no necesariamente representa una degradación real del enlace, sino una situación en la que no hay tráfico suficiente para evaluar correctamente la transmisión.
 
-![Salida en consola sin tráfico uplink](images/salida_sin_trafico.png)
+![Salida general de la xApp modificada](generico.jpg)
 ## Configuración del canal RFS
 
 Para realizar pruebas con el canal RFS, el nivel de ruido del canal se modifica desde los archivos de configuración del UE y del gNB. Es importante cambiar el valor en ambos archivos, ya que los dos componentes incluyen una definición del canal.
