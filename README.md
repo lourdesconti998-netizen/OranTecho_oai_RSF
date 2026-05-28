@@ -202,4 +202,4 @@ El valor de `noise_power_dB` permite configurar el nivel de ruido del canal. En 
 | Canal RFS intermedio | `noise_power_dB = -50;` | Enlace con condición intermedia. |
 | Canal RFS degradado | `noise_power_dB = -5;` | Enlace degradado por mayor nivel de ruido. |
 
-Luego de modificar el valor, se deben guardar los cambios y volver a ejecutar el entorno para que la nueva configuración sea tomada por el UE y el gNB.
+Luego de modificar el valor, se deben guardar los cambios.
