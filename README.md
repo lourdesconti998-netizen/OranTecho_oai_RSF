@@ -1,0 +1,179 @@
+# Monitoreo de calidad de canal en OAI/FlexRIC
+
+## Descripción general
+
+El siguiente repositorio contiene la modificación de una xApp de monitoreo de métricas KPM en el entorno FlexRIC/OAI, con el objetivo de clasificar el estado del enlace de cada UE y brindar un posible caso de contingencia.
+
+## Objetivo
+
+El objetivo de esta modificación es agregar una funcionalidad de monitoreo que permita evaluar, en tiempo de ejecución, la calidad del enlace de los UEs a partir de métricas reportadas por la red y brindar un posible camino de solución.
+
+## Tecnologías utilizadas
+
+- Ubuntu 22.04.5 LTS de 64 bits.
+- OpenAirInterface.
+- FlexRIC.
+- xApp de monitoreo KPM.
+- Lenguaje C.
+- Métricas KPM para monitoreo de UEs.
+
+## Entorno de ejecución
+
+Las pruebas se realizaron sobre Ubuntu 22.04.5 LTS de 64 bits. La máquina utilizada contaba con un procesador Intel Core i7-12700 de 12.ª generación, 16 GB de memoria RAM, gráficos integrados Intel UHD Graphics 770 y un disco de 500 GB.
+
+## Funcionalidad agregada
+
+Se agregó una lógica de clasificación del estado del enlace para cada UE monitoreado por la xApp.
+
+A partir de las métricas recibidas mediante los reportes KPM, la xApp evalúa el estado observado y asigna una clasificación cualitativa del enlace.
+
+Las clasificaciones consideradas son:
+
+- `MALO`
+- `BUENO`
+- `MUY BUENO`
+
+## Métricas utilizadas
+
+La xApp modificada utiliza las siguientes métricas para determinar el estado observado del enlace:
+
+| Métrica | Descripción |
+|---|---|
+| Throughput uplink | Tasa de datos transmitida por el UE hacia la red. |
+| SNR | Relación entre la potencia de señal y el nivel de ruido. |
+| MCS uplink | Esquema de modulación y codificación utilizado en uplink. |
+| BLER uplink | Porcentaje de bloques recibidos con error. |
+
+## Criterio de clasificación del enlace
+
+La xApp clasifica el estado observado del enlace en tres casos posibles: `MALO`, `BUENO` y `MUY BUENO`.
+
+| Estado | Criterio |
+|---|---|
+| `MALO` | THP UL < 10000 kbps, SNR < 35 dB, MCS UL < 20 o BLER UL > 2 %. Se cumple si al menos una de estas condiciones ocurre. |
+| `BUENO` | Caso intermedio. No cumple las condiciones para `MALO`, pero tampoco cumple todas las condiciones para `MUY BUENO`. |
+| `MUY BUENO` | THP UL ≥ 23000 kbps, SNR ≥ 45 dB, MCS UL ≥ 26 y BLER UL ≤ 1 %. Se cumple si todas estas condiciones ocurren. |
+
+## Sugerencias de diagnóstico ante casos degradados
+
+Cuando el enlace es clasificado como `MALO`, la xApp modificada identifica cuál de las métricas evaluadas provocó la degradación y muestra en consola una sugerencia básica de diagnóstico.
+
+Las métricas consideradas para estas sugerencias son:
+
+| Métrica afectada | Condición detectada | Sugerencia |
+|---|---|---|
+| Throughput uplink | THP bajo | Revisar la asignación de PRBs UL, el scheduler y las colas de QoS. |
+| SNR | SNR baja | Revisar potencia UL, interferencia, beamforming o handover. |
+| MCS | MCS bajo | Utilizar un MCS más robusto temporalmente y volver a evaluar el CQI. |
+| BLER | BLER alto | Reforzar HARQ, bajar el MCS objetivo y validar el transporte. |
+
+## Archivo modificado
+
+La xApp modificada se encuentra en el archivo:
+
+```bash
+flexric/examples/xApp/c/monitor/xapp_kpm_moni.c
+```
+
+Luego de realizar cambios en la xApp, se deben guardar las modificaciones y aplicar nuevamente los archivos de parche. Para ello, se debe ingresar al siguiente directorio:
+
+```bash
+cd O-RAN-Testbed-Automation/OpenAirInterface_Testbed/RAN_Intelligent_Controllers/Flexible-RIC/additional_scripts
+```
+
+Y ejecutar:
+
+```bash
+./apply_changes_to_patch_files.sh
+```
+
+## Ejecución
+
+### Levantar el core 5G
+
+```bash
+cd "5G Core Network"
+./run.sh
+```
+
+### Levantar el gNB
+
+En otra terminal:
+
+```bash
+cd "Next Generation Node B"
+./run.sh
+```
+
+### Levantar el UE
+
+En otra terminal:
+
+```bash
+cd "User Equipment"
+./run.sh
+```
+
+Para levantar otro UE, ejecutar en otra terminal:
+
+```bash
+./run.sh 2
+```
+
+### Levantar FlexRIC
+
+```bash
+cd "RAN Intelligent Controllers/Flexible-RIC"
+./run.sh
+```
+
+### Ejecutar la xApp modificada
+
+Luego de levantar FlexRIC, ejecutar la xApp modificada:
+
+```bash
+./run_xapp_kpm_moni.sh
+```
+### Generar tráfico uplink desde los UEs
+
+Si se desea generar tráfico desde los UEs hacia la red, se debe abrir una terminal bash asociada al UE correspondiente y ejecutar el comando de generación de tráfico utilizado en el entorno de pruebas.
+
+Por ejemplo:
+
+```bash
+sudo ip netns exec ue1 bash
+```
+
+Luego, dentro de esa terminal, ejecutar el comando correspondiente para generar tráfico uplink.
+
+```bash
+# iperf -c X.X.X.X -u -b 50M -t 60
+```
+## Salida esperada en consola
+
+Una vez ejecutada la xApp modificada, la consola muestra las métricas KPM recibidas para cada UE monitoreado y ademas se imprime la clasificación del estado observado del enlace de acuerdo con los umbrales definidos.
+
+
+### Enlace clasificado como MUY BUENO
+
+En este caso, las métricas evaluadas se encuentran dentro de valores favorables.
+
+![Salida en consola para enlace MUY BUENO](images/salida_muy_bueno.png)
+
+### Enlace clasificado como BUENO
+
+En este caso, el enlace no presenta una degradación clara, pero tampoco cumple todas las condiciones necesarias para ser clasificado como `MUY BUENO`.
+
+![Salida en consola para enlace BUENO](images/salida_bueno.png)
+
+### Enlace clasificado como MALO
+
+En este caso, al menos una de las métricas evaluadas presenta un valor degradado. La xApp muestra la clasificación del enlace y una sugerencia de diagnóstico asociada.
+
+![Salida en consola para enlace MALO](images/salida_malo.png)
+
+### Caso sin tráfico uplink
+
+Cuando no hay tráfico uplink activo, la xApp puede clasificar el enlace como `MALO` debido al bajo throughput. Este caso no necesariamente representa una degradación real del enlace, sino una situación en la que no hay tráfico suficiente para evaluar correctamente la transmisión.
+
+![Salida en consola sin tráfico uplink](images/salida_sin_trafico.png)
