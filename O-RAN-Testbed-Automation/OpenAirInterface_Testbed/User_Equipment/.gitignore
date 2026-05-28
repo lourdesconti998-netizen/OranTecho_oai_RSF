@@ -1,7 +1,5 @@
 # Ignore testbed subdirectories
 /configs/
 /logs/
-/openairinterface5g/
-openairinterface5g
 install_time.txt
 !install_patch_files/
