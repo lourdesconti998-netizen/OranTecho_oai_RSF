@@ -1,5 +1,4 @@
 # Ignore testbed subdirectories
-/configs/
 /logs/
 install_time.txt
 !install_patch_files/
