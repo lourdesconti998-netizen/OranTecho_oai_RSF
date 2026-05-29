@@ -4,10 +4,6 @@
 
 El siguiente repositorio contiene la modificación de una xApp de monitoreo de métricas KPM en el entorno FlexRIC/OAI, con el objetivo de clasificar el estado del enlace de cada UE y brindar un posible caso de contingencia.
 
-## Objetivo
-
-El objetivo de esta modificación es agregar una funcionalidad de monitoreo que permita evaluar, en tiempo de ejecución, la calidad del enlace de los UEs a partir de métricas reportadas por la red y brindar un posible camino de solución.
-
 ## Tecnologías utilizadas
 
 - Ubuntu 22.04.5 LTS de 64 bits.
