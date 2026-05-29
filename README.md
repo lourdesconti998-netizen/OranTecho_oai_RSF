@@ -208,7 +208,7 @@ Luego de modificar el valor, se deben guardar los cambios.
 Para instalar el entorno, primero se debe clonar este repositorio:
 
 ```bash
-git clone https://github.com/lourdesconti998-netizen/implementacion2.git
+git clone https://github.com/lourdesconti998-netizen/OranTech_oai_RSF.git
 ```
 
 Luego, ingresar al directorio del entorno basado en OpenAirInterface y FlexRIC:
